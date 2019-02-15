@@ -7,13 +7,11 @@
     {
         //Les variables internes au Model
         var $pdo;
-
         //Les constantes des différents types de retours possibles
         const NO = 0; //Pas de retour
         const FETCH = 1; //Retour de type fetch
         const FETCHALL = 2; //Retour de type fetchall
         const ROWCOUNT = 3; //Retour de type rowCount()
-
         /**
          * Model constructor
          * @param PDO $pdo : PDO connect to use
@@ -22,7 +20,6 @@
         {
             $this->pdo = $pdo;
         }
-
         /**
          * Cette fonction permet créer une connexion à une base SQL via PDO
          * @param string $host : L'host à contacter
@@ -40,7 +37,6 @@
             
             // On se connecte à MySQL
             $pdo = new PDO('mysql:host=' . $host . ';dbname=' . $dbname . ';charset=' . $charset , $user, $password, $options);
-
             if ($pdo === false)
             {
                 throw new DescartesExceptionDatabaseConnection('Cannot connect to database ' . $dbname . '.');
@@ -48,7 +44,6 @@
                 
             return $pdo;
         }
-
         /**
          * Run a query and return result
          * @param string $query : Query to run
@@ -63,22 +58,18 @@
             $query = $this->pdo->prepare($query);
             $query->setFetchMode($return_type);
             $query->execute($datas);
-
             if ($debug)
             {
                 return $query->errorInfo();
             }
-
             switch ($return_type)
             {
                 case self::NO :
                     $return = NULL;
                     break; 
-
                 case self::FETCH :
                     $return = $query->fetch();
                     break; 
-
                 case self::FETCHALL :
                     $return = $query->fetchAll();
                     break; 
@@ -90,7 +81,6 @@
                 default :
                     $return = $query->fetchAll();
             }
-
             return $return;
         }
         
@@ -102,11 +92,9 @@
         {
             return $this->pdo->lastInsertId();
         }
-
         /*
             Fonctions d'execution des requetes ou de génération
         */
-
         
         /**
          * Generate IN query params and values
@@ -121,7 +109,6 @@
             );
             
             $flags = array();
-
             $values = count($values) ? $values : array();
             
             foreach ($values as $clef => $value)
@@ -133,8 +120,6 @@
             $return['QUERY'] .= ' IN(' . implode(', ', $flags) . ')';
             return $return;
         }
-
-
         /**
          * Evaluate a condition to generate query string and params array for
          * @param string $fieldname : fieldname possibly preceed by '<, >, <=, >=, ! or ='
@@ -145,7 +130,6 @@
         {
             $first_char = mb_substr($fieldname, 0, 1);
             $second_char = mb_substr($fieldname, 1, 1);
-
             switch(true)
             {
                 //Important de traiter <= & >= avant < & >
@@ -153,49 +137,38 @@
                     $true_fieldname = mb_substr($fieldname, 2);
                     $operator = '<=';
                     break;
-
                 case ('>=' == $first_char . $second_char) :
                     $true_fieldname = mb_substr($fieldname, 2);
                     $operator = '>=';
                     break;
-
                 case ('!=' == $first_char . $second_char) :
                     $true_fieldname = mb_substr($fieldname, 2);
                     $operator = '!=';
                     break;
-
                 case ('!' == $first_char) :
                     $true_fieldname = mb_substr($fieldname, 1);
                     $operator = '!=';
                     break;
-
                 case ('<' == $first_char) :
                     $true_fieldname = mb_substr($fieldname, 1);
                     $operator = '<';
                     break;
-
                 case ('>' == $first_char) :
                     $true_fieldname = mb_substr($fieldname, 1);
                     $operator = '>';
                     break;
-
                 case ('=' == $first_char) :
                     $true_fieldname = mb_substr($fieldname, 1);
                     $operator = '=';
                     break;
-
                 default :
                     $true_fieldname = $fieldname;
                     $operator = '=';
             }
-
             $query = '`' . $true_fieldname . '` ' . $operator . ' :where_' . $true_fieldname;
             $param = ['where_' . $true_fieldname => $value];
-
             return ['QUERY' => $query, 'PARAM' => $param];
         }
-
-
         /**
          * Get from table, posssibly with some conditions
          * @param string $table : table name
@@ -216,9 +189,7 @@
                 $wheres[] = $condition['QUERY'];
                 $params = array_merge($params, $condition['PARAM']);
             }
-
-            $query = "SELECT * FROM " . $table . " WHERE 1 " . (count($wheres) ? 'AND ' : '') . implode('AND ', $wheres);
-
+            $query = "SELECT * FROM " . $table . " WHERE 1 " . (count($wheres) ? 'AND ' : '') . implode(' AND ', $wheres);
             if ($order_by !== null)
             {
                 $query .= ' ORDER BY ' . $order_by;
@@ -228,7 +199,6 @@
                     $query .= ' DESC';
                 }
             }
-
             if ($limit !== null)
             {
                 $query .= ' LIMIT :limit';
@@ -237,10 +207,7 @@
                     $query .= ' OFFSET :offset';
                 }
             }
-
-
             $query = $this->pdo->prepare($query);
-
             if ($limit !== null)
             {
                 $query->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -250,19 +217,14 @@
                     $query->bindParam(':offset', $offset, PDO::PARAM_INT);
                 }
             }
-
             foreach ($params as $label => &$param)
             {
                 $query->bindParam(':' . $label, $param);
             }
-
             $query->setFetchMode(PDO::FETCH_ASSOC);
             $query->execute();
-
             return $query->fetchAll();
         }
-
-
         /**
          * Get one line from table, posssibly with some conditions
          * see get
@@ -270,12 +232,10 @@
         public function get_one (string $table, array $conditions = [], ?string $order_by = null, bool $desc = false, ?int $limit = null, ?int $offset = null)
         {
             $result = $this->get($table, $conditions, $order_by, $desc, $limit, $offset);
-
             if (empty($result[0]))
             {
                 return $result;
             }
-
             return $result[0];
         }
         
@@ -293,23 +253,17 @@
                 $wheres[] = $condition['QUERY'];
                 $params = array_merge($params, $condition['PARAM']);
             }
-
-            $query = "SELECT COUNT(*) as `count` FROM " . $table . " WHERE 1 " . (count($wheres) ? 'AND ' : '') . implode('AND ', $wheres);
+            $query = "SELECT COUNT(*) as `count` FROM " . $table . " WHERE 1 " . (count($wheres) ? 'AND ' : '') . implode(' AND ', $wheres);
             
             $query = $this->pdo->prepare($query);
-
             foreach ($params as $label => &$param)
             {
                 $query->bindParam(':' . $label, $param);
             }
-
             $query->setFetchMode(PDO::FETCH_ASSOC);
             $query->execute();
-
             return $query->fetch()['count'];
         }
-
-
         /**
          * Update data from table with some conditions
          * @param string $table : table name
@@ -322,15 +276,12 @@
         {
             $params = array();
             $sets = array();
-
             
             foreach ($datas as $label => $value)
             {
                 $params['set_' . $label] = $value;
                 $sets[] = '`' . $label . '` = :set_' . $label . ' ';
             }
-
-
             $wheres = array();
             foreach ($conditions as $label => $value)
             {
@@ -338,12 +289,9 @@
                 $wheres[] = $condition['QUERY'];
                 $params = array_merge($params, $condition['PARAM']);
             }
-
-
-            $query = "UPDATE `" . $table . "` SET " . implode(', ', $sets) . " WHERE 1 AND " . implode('AND ', $wheres);
+            $query = "UPDATE `" . $table . "` SET " . implode(', ', $sets) . " WHERE 1 AND " . implode(' AND ', $wheres);
             return $this->run_query($query, $params, self::ROWCOUNT);
         }
-
         /**
          * Delete from table according to certain conditions
          * @param string $table : Table name
@@ -361,11 +309,9 @@
                 $wheres[] = $condition['QUERY'];
                 $params = array_merge($params, $condition['PARAM']);
             }
-
-            $query = "DELETE FROM `" . $table . "` WHERE 1 AND " . implode('AND ', $wheres);
+            $query = "DELETE FROM `" . $table . "` WHERE 1 AND " . implode(' AND ', $wheres);
             return $this->run_query($query, $params, self::ROWCOUNT);
         }
-
         /**
          * Insert new line into table
          * @param string $table : table name
@@ -376,17 +322,13 @@
         {
             $params = array();
             $field_names = array();
-
             foreach ($datas as $field_name => $value)
             {
                 $params[$field_name] = $value;
                 $field_names[] = $field_name;
             }
-
             $query = "INSERT INTO `" . $table . "` (`" . implode('`, `', $field_names) . "`) VALUES(:" . implode(', :', $field_names) . ")";
-
             //On retourne le nombre de lignes insérées
             return $this->run_query($query, $params, self::ROWCOUNT);
         }
-
     } 
