@@ -1,7 +1,8 @@
 <?php
     $routes = array(
-        'test' => [
+        'httpstatus' => [
             'home' => '/',
+            'login' => '/login',
         ],
 
     );
