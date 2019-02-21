@@ -1,7 +1,7 @@
 <?php
 namespace controllers\publics;
 
-use \controllers\internals\Httpstatus as InternalHttpstatus;
+use \controllers\internals\httpstatus as InternalHttpstatus;
 
 class httpstatus extends \Controller
 {
