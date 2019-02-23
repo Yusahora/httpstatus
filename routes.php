@@ -3,6 +3,8 @@
         'httpstatus' => [
             'home' => '/',
             'login' => '/login',
+            'admin' => '/admin',
+            'error' => '/error'
         ],
 
     );

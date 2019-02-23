@@ -16,6 +16,43 @@ class httpstatus extends \Controller
     } 
     public function login ()
     {
-        return $this->render("httpstatus/login");
+        $email = $_POST['email'] ?? false;
+        $pwd = $_POST['password'] ?? false;
+        
+        if($email == false || $pwd == false){
+            return $this->render('httpstatus/login', [
+                "success" => true
+            ]);
+        }
+        else {
+            $conn = $this->internal_httpstatus->connect($email, $pwd);
+
+            if($conn == false){
+                return $this->render('httpstatus/login', [
+                    "success" => false
+                ]);
+            }
+            else{
+                session_start();
+                $_SESSION['user'] = $conn;
+                return $this->render('httpstatus/login', [
+                    "success" => true
+                ]);
+            }
+
+
+        }
+        
+        
     }
+    public function admin (){
+        if($_SESSION['user']){
+        session_destroy();
+        return $this->render("httpstatus/admin");
+        }
+        else{
+            return $this->render("httpstatus/error");
+        }
+    }
+    
 }

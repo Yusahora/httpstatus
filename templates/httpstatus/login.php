@@ -1,5 +1,4 @@
 <?php include(PWD_TEMPLATES . '/incs/head.php'); ?>
-<?php include(PWD_TEMPLATES . '/incs/header.php'); ?>
 
 <div class="container">
     <div class="row mt-5">

@@ -10,12 +10,14 @@ class Httpstatus extends \InternalController
         $this->model_httpstatus = new ModelHttpstatus($pdo);
     }
 
-    public function connect(){
-        $log = $this->model_httpstatus->get_admin($email, $pwd);
-        if($log['pwd'] === $pwd && $log['email'] === $email){
-            return $log;
+    public function connect($email, $pwd)
+    {
+        $login = $this->model_httpstatus->get_info($email, $pwd);
+        if($login['mdp'] === $pwd){
+            return $login;
         }
-        else{
+        else
+        {
             return false;
         }
     }
