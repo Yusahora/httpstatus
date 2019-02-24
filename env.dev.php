@@ -8,5 +8,5 @@
         'DATABASE_HOST' => 'localhost',
         'DATABASE_NAME' => 'blanchet_ollivier',
         'DATABASE_USER' => 'root',
-        'DATABASE_PASSWORD' => 'Jmmemp29',
+        'DATABASE_PASSWORD' => 'bernardbernard',
     ];
