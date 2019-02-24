@@ -1,5 +1,3 @@
-<?php include(PWD_TEMPLATES . '/incs/head.php'); ?>
-
 <div class="container">
     <div class="row mt-5">
         <div class="col-md-12">
@@ -22,21 +20,8 @@
                 <div id="login-submit" class="mt-4 mb-2">
                     <button type="submit" name="submit" class="btn">Login</button>
                 </div>
-
-                <?php
-                    if(!$success){
-                ?>
-                    <div id="login-error" class="mt-2">
-                        <p>Email ou mot de passe incorrect</p>
-                    </div>
-                <?php }?>
-                        
-                <div id="lost-password">
-                    <a href="">lost your password ?</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<?php include(PWD_TEMPLATES . '/incs/footer.php'); ?>
