@@ -21,4 +21,30 @@ class Api extends \InternalController
             return false;
         }
     }
+    public function addSite(string $url_site)
+    {
+        $site = $this->model_api->create_site($url_site);
+
+        if($site == true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public function deleteSite(int $id)
+    {
+        $delete = $this->model_httpstatus->deleteSite($id);
+
+        if($delete == true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

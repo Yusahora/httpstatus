@@ -59,5 +59,53 @@ class Api extends \Controller
 
             ));
     }
+    else {
+        return $this->controller_api->json(array(
+            'success' => false,
+            'api_key' => 'Not valid'
+        ));
+    }
+    }
+    public function add(){
+        $key_user = $_GET['api_key'] ?? false;
+        $api_key = "abcdefghjaimelesapis";
+        $url_site = htmlspecialchars($_POST['url_site']);
+        
+
+        if($key_user == $api_key){
+                $add = $this->internal_api->addSite($url_site);
+                $id = $this->model_api->last_id();
+
+                if($add && isset($url_site) && !empty($url_site))
+                {
+                    return $this->controller_api->json(array(
+                        'success' => true,
+                        'id' => $id,
+                    ));
+                }
     }
 }
+public function delete(int $id){
+    $key_user = $_GET['api_key'] ?? false;
+        $api_key = "abcdefghjaimelesapis";
+        if($key_user == $api_key){
+            $deleteSite = $this->internal_api->deleteSite($id);
+            
+            if($deleteSite)
+            {
+                return $this->controller_api->json(array(
+                    'success' => true,
+                    'id' => $id
+                ));
+            }
+            else
+            {
+                return $this->controller_api->json(array(
+                    'success' => false,
+                    'id' => 'ID not valid'
+                ));
+            }
+        }
+        }
+}
+
